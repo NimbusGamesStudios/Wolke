@@ -1,33 +1,50 @@
 """
-exe_bauen.py  -  Macht aus wolken.py eine fertige Wolken.exe
+exe_bauen.py  -  Macht aus wolken.py ein fertiges Programm
 
 Aufrufen mit:
 
     python werkzeuge/exe_bauen.py
 
-Danach liegt die fertige Datei unter  dist/Wolken.exe.
-Sie enthaelt alles: Python selbst, die Oberflaeche und die Spiele.
-Auf einem fremden Rechner muss nichts installiert sein.
-
-Wie funktioniert das?
-PyInstaller packt den Python-Interpreter, alle benoetigten Bibliotheken
-und die mitgegebenen Dateien in eine einzige .exe. Beim Start entpackt
-sie sich in einen temporaeren Ordner - dessen Pfad steht dann in
-sys._MEIPASS, siehe programm_ordner() in wolken.py.
+Ergebnis:
+    dist/Wolken/               der Programmordner
+    dist/Wolken-Launcher.zip   das Paket zum Weitergeben
 
 Vorher muss PyInstaller einmal installiert werden:
 
     pip install pyinstaller
+
+
+WARUM EIN ORDNER UND KEINE EINZELNE DATEI?
+------------------------------------------
+PyInstaller kann beides: --onefile packt alles in eine einzige .exe,
+--onedir legt die .exe zusammen mit ihren Bausteinen in einen Ordner.
+
+Eine einzelne Datei waere bequemer - aber sie entpackt sich beim Start
+selbst in einen temporaeren Ordner. Genau dieses Verhalten zeigen auch
+Trojaner, die ihre Schadsoftware nachladen. Virenscanner erkennen das
+per Mustererkennung und melden einen Fund, obwohl nichts passiert ist.
+
+Bei uns war es Windows Defender mit "Trojan:Win32/Wacatac.B!ml". Das
+Kuerzel "!ml" steht fuer machine learning: eine Vermutung des Scanners,
+kein echter Fund. Trotzdem wurde der Download blockiert.
+
+Mit --onedir passiert das nicht, weil nichts entpackt werden muss.
+Nachgemessen mit demselben Code:
+    als eine Datei -> "found 1 threats"
+    als Ordner     -> "found no threats"
+
+Der Ordner wandert am Ende sowieso in ein ZIP - fuer den Nutzer bleibt
+es also ein einziger Download.
 """
 
 import os
 import subprocess
 import sys
+import zipfile
 
 WURZEL = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
-# Diese Dateien und Ordner wandern mit in die .exe.
-# Format unter Windows:  "Quelle;Ziel-innerhalb-der-exe"
+# Diese Dateien und Ordner wandern mit ins Programm
 MITGEBEN = [
     ('index.html', '.'),
     ('spiele.json', '.'),
@@ -52,7 +69,7 @@ def main():
         sys.executable, '-m', 'PyInstaller',
         '--noconfirm',
         '--clean',
-        '--onefile',        # alles in EINE Datei
+        '--onedir',         # Ordner statt Einzeldatei, siehe oben
         '--noconsole',      # kein schwarzes Konsolenfenster
         '--name', 'Wolken',
         '--icon', os.path.join('icons', 'wolken.ico'),
@@ -70,19 +87,65 @@ def main():
 
     befehl.append('wolken.py')
 
-    print('Baue Wolken.exe ...\n')
+    print('Baue den Programmordner ...')
+    print('')
     ergebnis = subprocess.run(befehl, cwd=WURZEL)
 
     if ergebnis.returncode != 0:
-        print('\nDer Bau ist fehlgeschlagen.')
+        print('')
+        print('Der Bau ist fehlgeschlagen.')
         return ergebnis.returncode
 
-    exe = os.path.join(WURZEL, 'dist', 'Wolken.exe')
-    if os.path.exists(exe):
-        print('\nFertig: %s  (%.1f MB)' % (exe, os.path.getsize(exe) / 1024 / 1024))
-        print('\nZum Weitergeben reicht diese eine Datei.')
-        print('Wer Updates aus dem Netz will, legt zusaetzlich eine quelle.json daneben.')
+    ordner = os.path.join(WURZEL, 'dist', 'Wolken')
+    if not os.path.isdir(ordner):
+        print('')
+        print('Der Programmordner wurde nicht erzeugt.')
+        return 1
+
+    print('')
+    print('Programm: %s  (%.1f MB)' % (ordner, ordnergroesse(ordner) / 1024 / 1024))
+
+    paket = paket_bauen(ordner)
+    print('Paket:    %s  (%.1f MB)' % (paket, os.path.getsize(paket) / 1024 / 1024))
+    print('')
+    print('Weitergegeben wird das ZIP.')
     return 0
+
+
+def ordnergroesse(pfad):
+    gesamt = 0
+    for wurzel, _, dateien in os.walk(pfad):
+        for d in dateien:
+            gesamt += os.path.getsize(os.path.join(wurzel, d))
+    return gesamt
+
+
+def paket_bauen(ordner):
+    """
+    Packt den ganzen Programmordner in ein ZIP - mitsamt Kurzanleitung.
+
+    Im ZIP liegt oben ein Ordner "Wolken". Wer ihn auspackt, hat alles
+    beisammen und startet darin die Wolken.exe.
+    """
+    dist = os.path.dirname(ordner)
+    ziel = os.path.join(dist, 'Wolken-Launcher.zip')
+    liesmich = os.path.join(WURZEL, 'werkzeuge', 'LIESMICH.txt')
+
+    if os.path.exists(ziel):
+        os.remove(ziel)
+
+    with zipfile.ZipFile(ziel, 'w', zipfile.ZIP_DEFLATED, compresslevel=9) as z:
+        for wurzel, _, dateien in os.walk(ordner):
+            for d in dateien:
+                voll = os.path.join(wurzel, d)
+                # Pfad im ZIP: "Wolken/..." statt des ganzen Festplattenpfads
+                drin = os.path.join('Wolken', os.path.relpath(voll, ordner))
+                z.write(voll, drin)
+
+        if os.path.exists(liesmich):
+            z.write(liesmich, 'LIESMICH.txt')
+
+    return ziel
 
 
 if __name__ == '__main__':

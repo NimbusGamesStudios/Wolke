@@ -99,14 +99,18 @@ def main():
         else:
             print('  mitgenommen: %s  ->  %s' % (quelle, ziel))
 
-    # Die fertige .exe mit hochladen, damit andere sie herunterladen koennen
-    exe = os.path.join(WURZEL, 'dist', 'Wolken.exe')
-    if os.path.exists(exe):
+    # Das ZIP mit hochladen - NICHT die nackte .exe.
+    # Chrome blockiert unsignierte .exe-Dateien von neuen Adressen
+    # ("Verdaechtiger Download blockiert"). Bei einem ZIP passiert das
+    # so gut wie nie. Entpacken ist ein Klick mehr, dafuer kommt der
+    # Download ueberhaupt an.
+    paket = os.path.join(WURZEL, 'dist', 'Wolken-Launcher.zip')
+    if os.path.exists(paket):
         os.makedirs(os.path.join(ZIEL, 'download'), exist_ok=True)
-        shutil.copy2(exe, os.path.join(ZIEL, 'download', 'Wolken.exe'))
-        print('  mitgenommen: dist/Wolken.exe  ->  download/Wolken.exe')
+        shutil.copy2(paket, os.path.join(ZIEL, 'download', 'Wolken-Launcher.zip'))
+        print('  mitgenommen: dist/Wolken-Launcher.zip  ->  download/Wolken-Launcher.zip')
     else:
-        print('  Hinweis: dist/Wolken.exe fehlt - vorher werkzeuge/exe_bauen.py laufen lassen')
+        print('  Hinweis: dist/Wolken-Launcher.zip fehlt - vorher paket_bauen.py laufen lassen')
 
     # GitHub Pages laesst sonst Ordner aus, die mit _ anfangen.
     # Bei uns gibt es keine, aber die Datei schadet nie und erspart

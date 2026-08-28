@@ -762,3 +762,11 @@ kbd {
 }
 
 .warnkasten p + p { margin-top: 10px; }
+
+/* Hervorgehobener Hinweis innerhalb eines Schritts */
+.schritte .wichtig {
+  margin-top: 9px;
+  padding-left: 13px;
+  border-left: 2px solid rgba(224, 168, 60, 0.45);
+  color: var(--text-leise);
+}

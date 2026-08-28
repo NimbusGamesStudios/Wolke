@@ -1,0 +1,51 @@
+WOLKEN LAUNCHER
+Nimbus Games
+
+
+SO GEHT ES LOS
+--------------
+1. Diese ZIP-Datei komplett entpacken.
+   Rechtsklick -> "Alle extrahieren"
+
+2. Im entpackten Ordner "Wolken" die Datei Wolken.exe
+   doppelklicken.
+
+   Wichtig: Der ganze Ordner gehoert zusammen. Die Wolken.exe
+   allein herausziehen funktioniert nicht - sie braucht die
+   Dateien neben sich.
+
+3. Beim allerersten Start meldet sich Windows mit
+   "Der Computer wurde durch Windows geschuetzt".
+
+   Das kommt bei jedem Programm, fuer das kein Zertifikat
+   gekauft wurde - so eines kostet mehrere hundert Euro im Jahr.
+   Auf "Weitere Informationen" klicken, dann auf
+   "Trotzdem ausfuehren". Die Meldung kommt nur einmal.
+
+4. Im Launcher beim gewuenschten Spiel auf "Herunterladen".
+
+Danach laeuft das Spiel auch ohne Internet.
+
+
+STEUERUNG (Schattenlabyrinth 3D)
+--------------------------------
+W A S D    Bewegen
+Maus       Umsehen
+Shift      Rennen - verbraucht Ausdauer
+M          Karte ein- und ausblenden
+Esc        Pause
+
+
+WIEDER LOSWERDEN
+----------------
+Den Ordner "Wolken" loeschen.
+Die heruntergeladenen Spiele liegen unter
+%LOCALAPPDATA%\Wolken - diesen Ordner ebenfalls loeschen.
+
+Es wird nichts in der Registry eingetragen und nichts
+sonst irgendwo im System abgelegt.
+
+
+MEHR DAZU
+---------
+https://nimbusgamesstudios.github.io/Wolke/

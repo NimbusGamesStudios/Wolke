@@ -406,7 +406,13 @@ class Bediener(BaseHTTPRequestHandler):
             try:
                 self.antworte_json(katalog_holen())
             except (OSError, urllib.error.URLError, ValueError) as fehler:
-                self.antworte_json({'fehler': str(fehler)}, 503)
+                # Die Adresse mitschicken. Ohne sie steht spaeter nur
+                # "404" da und niemand weiss, wo gesucht wurde.
+                self.antworte_json({
+                    'fehler': str(fehler),
+                    'quelle': QUELLE,
+                    'online_quelle': IST_ONLINE_QUELLE,
+                }, 503)
             return
 
         if pfad == '/api/fortschritt':

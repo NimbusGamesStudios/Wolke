@@ -229,4 +229,4 @@ ueberhaupt eine Ausgabe gibt.
 
 ---
 
-*Schulprojekt Informatik — Lennart, 2026*
+*Nimbus Games · Schulprojekt Informatik, 2026*
