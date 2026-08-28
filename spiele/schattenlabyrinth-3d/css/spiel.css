@@ -1,0 +1,412 @@
+/* ============================================================
+   Schattenlabyrinth - Stylesheet
+   ============================================================ */
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  background: #000;
+  overflow: hidden;
+  font-family: "Segoe UI", system-ui, sans-serif;
+  color: #c8d0e0;
+  cursor: crosshair;
+  user-select: none;
+}
+
+#spielfeld {
+  display: block;
+  width: 100vw;
+  height: 100vh;
+}
+
+.versteckt { display: none !important; }
+
+/* ============================================================
+   HUD
+   ============================================================ */
+#hud {
+  position: fixed;
+  top: 22px;
+  left: 24px;
+  display: flex;
+  gap: 26px;
+  align-items: flex-end;
+  pointer-events: none;
+  text-shadow: 0 2px 12px #000;
+}
+
+.hud-label {
+  font-size: 10px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: #59637d;
+  margin-bottom: 3px;
+}
+
+.hud-wert {
+  font-size: 26px;
+  font-weight: 200;
+  line-height: 1;
+  color: #e6edf8;
+  font-variant-numeric: tabular-nums;
+}
+
+.hud-klein {
+  font-size: 14px;
+  color: #59637d;
+}
+
+.hud-ausdauer { min-width: 130px; }
+
+.balken {
+  height: 5px;
+  background: rgba(120, 140, 200, 0.13);
+  border-radius: 3px;
+  overflow: hidden;
+  margin-top: 9px;
+}
+
+.balken-fuellung {
+  height: 100%;
+  width: 100%;
+  background: linear-gradient(90deg, #4d7fd6, #7fb8ff);
+  border-radius: 3px;
+  transition: background 0.25s;
+}
+
+.balken-fuellung.leer {
+  background: linear-gradient(90deg, #6b3030, #b04a4a);
+}
+
+/* ============================================================
+   Gefahren-Warnung
+   ============================================================ */
+#gefahr {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 15px;
+  letter-spacing: 0.42em;
+  font-weight: 600;
+  color: #ff4a4a;
+  text-shadow: 0 0 30px rgba(255, 40, 40, 0.7);
+  pointer-events: none;
+  animation: pochen 0.85s ease-in-out infinite;
+}
+
+@keyframes pochen {
+  0%, 100% { opacity: 0.25; }
+  50%      { opacity: 0.9; }
+}
+
+/* ============================================================
+   Kurze Einblendungen
+   ============================================================ */
+#meldung {
+  position: fixed;
+  bottom: 15%;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 15px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: #ffdca0;
+  text-shadow: 0 0 24px rgba(255, 200, 120, 0.55);
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.4s;
+  white-space: nowrap;
+}
+
+#meldung.sichtbar { opacity: 1; }
+
+/* ============================================================
+   Overlays (Menue, Tod, Sieg, Pause)
+   ============================================================ */
+.overlay {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: radial-gradient(ellipse at center, rgba(8, 10, 18, 0.93) 0%, rgba(0, 0, 0, 0.985) 70%);
+  backdrop-filter: blur(3px);
+  z-index: 10;
+  animation: einblenden 0.5s ease;
+}
+
+@keyframes einblenden {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+.menue-inhalt {
+  text-align: center;
+  max-width: 620px;
+  padding: 0 30px;
+}
+
+.titel {
+  font-size: clamp(34px, 7vw, 66px);
+  font-weight: 200;
+  letter-spacing: 0.14em;
+  color: #dbe4f4;
+  margin-bottom: 6px;
+  text-shadow: 0 0 60px rgba(90, 130, 220, 0.35);
+}
+
+.titel span {
+  color: #6d84b4;
+  font-weight: 300;
+}
+
+.tot-titel {
+  color: #e05a5a;
+  text-shadow: 0 0 60px rgba(220, 50, 50, 0.45);
+  animation: zittern 3s ease-in-out infinite;
+}
+
+@keyframes zittern {
+  0%, 100% { transform: translate(0, 0); }
+  25%      { transform: translate(-1px, 1px); }
+  75%      { transform: translate(1px, -1px); }
+}
+
+.sieg-titel {
+  color: #7fd6a8;
+  text-shadow: 0 0 60px rgba(90, 220, 150, 0.4);
+}
+
+.untertitel {
+  font-size: 14px;
+  line-height: 1.85;
+  color: #6b7690;
+  margin-bottom: 38px;
+  letter-spacing: 0.05em;
+}
+
+/* ---------- Schwierigkeit ---------- */
+.schwierigkeit {
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+  margin-bottom: 32px;
+}
+
+.stufe {
+  background: rgba(20, 25, 40, 0.55);
+  border: 1px solid rgba(120, 140, 200, 0.16);
+  border-radius: 10px;
+  padding: 13px 20px;
+  color: #8892a8;
+  cursor: pointer;
+  text-align: left;
+  font-family: inherit;
+  transition: all 0.22s;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.stufe:hover {
+  border-color: rgba(120, 160, 255, 0.4);
+  background: rgba(30, 40, 65, 0.6);
+}
+
+.stufe.aktiv {
+  border-color: #4d7fd6;
+  background: rgba(40, 60, 110, 0.4);
+  color: #dce6f8;
+}
+
+.stufe-name {
+  font-size: 15px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+}
+
+.stufe-info {
+  font-size: 11px;
+  color: #5d6880;
+  letter-spacing: 0.03em;
+}
+
+.stufe.aktiv .stufe-info { color: #7d90b4; }
+
+/* ---------- Knoepfe ---------- */
+.hauptknopf {
+  display: block;
+  width: 100%;
+  background: linear-gradient(180deg, #3f6ec2, #2d4f92);
+  border: none;
+  border-radius: 10px;
+  padding: 16px;
+  color: #fff;
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 0.22em;
+  font-family: inherit;
+  cursor: pointer;
+  transition: all 0.22s;
+  box-shadow: 0 8px 34px rgba(60, 110, 220, 0.28);
+}
+
+.hauptknopf:hover {
+  background: linear-gradient(180deg, #4f82dd, #3660ad);
+  box-shadow: 0 10px 44px rgba(70, 130, 250, 0.42);
+  transform: translateY(-1px);
+}
+
+.nebenknopf {
+  background: none;
+  border: none;
+  color: #5d6880;
+  font-size: 12px;
+  font-family: inherit;
+  letter-spacing: 0.1em;
+  cursor: pointer;
+  margin-top: 16px;
+  padding: 8px;
+  transition: color 0.2s;
+}
+
+.nebenknopf:hover { color: #9aa6c0; }
+
+/* ---------- Bestzeit ---------- */
+.bestzeit {
+  margin-top: 22px;
+  font-size: 12px;
+  color: #5d6880;
+  letter-spacing: 0.08em;
+  min-height: 18px;
+}
+
+.bestzeit b {
+  color: #9db4e0;
+  font-weight: 600;
+}
+
+/* ---------- Steuerung ---------- */
+.steuerung {
+  margin-top: 34px;
+  font-size: 11px;
+  color: #4a5468;
+  letter-spacing: 0.05em;
+  line-height: 2.2;
+}
+
+.trenner { margin: 0 8px; opacity: 0.5; }
+
+kbd {
+  background: rgba(120, 140, 200, 0.1);
+  border: 1px solid rgba(120, 140, 200, 0.22);
+  border-radius: 4px;
+  padding: 2px 6px;
+  margin: 0 1px;
+  font-family: inherit;
+  font-size: 10px;
+  color: #8892a8;
+}
+
+
+/* ============================================================
+   Ergaenzungen fuer die 3D-Version
+   ============================================================ */
+
+/* Das Canvas wird in niedriger Aufloesung gerendert und
+   hochskaliert. image-rendering: pixelated verhindert, dass der
+   Browser dabei weichzeichnet - wir wollen klare Pixelkanten. */
+#spielfeld {
+  image-rendering: pixelated;
+  image-rendering: crisp-edges;
+}
+
+/* ---------- Fadenkreuz ---------- */
+#fadenkreuz {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  width: 3px;
+  height: 3px;
+  margin: -1.5px 0 0 -1.5px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.5);
+  box-shadow: 0 0 6px rgba(0, 0, 0, 0.9);
+  pointer-events: none;
+  z-index: 5;
+}
+
+/* ---------- Rote Blende beim Treffer ---------- */
+#treffer {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  background: radial-gradient(ellipse at center,
+              rgba(255, 0, 0, 0) 35%, rgba(190, 0, 0, 0.85) 100%);
+  opacity: 0;
+  transition: opacity 0.12s;
+  z-index: 6;
+}
+
+#treffer.aktiv { opacity: 1; }
+
+/* ---------- Pointer-Lock-Hinweis ---------- */
+#klick-hinweis {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(3, 4, 8, 0.55);
+  backdrop-filter: blur(2px);
+  z-index: 8;
+  cursor: pointer;
+}
+
+.klick-inhalt {
+  text-align: center;
+  font-size: 13px;
+  letter-spacing: 0.14em;
+  color: #9aa6c0;
+  text-transform: uppercase;
+}
+
+.klick-symbol {
+  font-size: 40px;
+  margin-bottom: 14px;
+  opacity: 0.65;
+}
+
+.klick-klein {
+  margin-top: 10px;
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  color: #55607a;
+  text-transform: none;
+}
+
+/* ---------- 3D-Kennzeichnung im Menue ---------- */
+.dreid {
+  display: inline-block;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.3em;
+  color: #7fb8ff;
+  border: 1px solid rgba(127, 184, 255, 0.4);
+  border-radius: 4px;
+  padding: 3px 9px 3px 12px;
+  margin-bottom: 18px;
+}
+
+.version {
+  margin-top: 10px;
+  font-size: 10.5px;
+  letter-spacing: 0.16em;
+  color: #414a5e;
+  text-transform: uppercase;
+}

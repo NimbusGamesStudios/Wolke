@@ -1,0 +1,10 @@
+{
+  "name": "Schattenlabyrinth 3D",
+  "kurz": "Horror-Labyrinth aus der Ich-Perspektive",
+  "beschreibung": "Du wachst in einem dunklen Labyrinth auf. Deine Taschenlampe zeigt nur einen schmalen Kegel. Finde die Schluessel, finde den Ausgang - und lauf, wenn du es hoerst. Die 3D-Ansicht entsteht komplett per Raycasting, ohne 3D-Bibliothek.",
+  "version": "1.2.0",
+  "start": "spiel.html",
+  "farbe": "#4d7fd6",
+  "genre": "Horror",
+  "neuerungen": "Laeuft jetzt im Wolken Launcher als eigenstaendiges Programm."
+}

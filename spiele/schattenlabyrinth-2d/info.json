@@ -1,0 +1,10 @@
+{
+  "name": "Schattenlabyrinth 2D",
+  "kurz": "Die Draufsicht-Fassung mit Taschenlampe",
+  "beschreibung": "Dieselbe Spielwelt von oben gesehen. Die Taschenlampe wirft echte Schatten, das Monster jagt dich per Breitensuche durch die Gaenge. Der Vorgaenger der 3D-Version.",
+  "version": "1.0.1",
+  "start": "spiel.html",
+  "farbe": "#7f6ad6",
+  "genre": "Horror",
+  "neuerungen": "Kleinere Korrektur beim Offline-Start."
+}

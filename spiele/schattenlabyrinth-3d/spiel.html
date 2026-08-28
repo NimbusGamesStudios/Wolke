@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Schattenlabyrinth 3D</title>
+  <link rel="icon" href="data:,">
+  <link rel="stylesheet" href="css/spiel.css">
+</head>
+<body>
+
+  <canvas id="spielfeld"></canvas>
+
+  <!-- Fadenkreuz -->
+  <div id="fadenkreuz" class="versteckt"></div>
+
+  <!-- Rote Blende, wenn das Monster zuschlaegt -->
+  <div id="treffer"></div>
+
+  <!-- ================= HUD ================= -->
+  <div id="hud" class="versteckt">
+    <div class="hud-block">
+      <div class="hud-label">Zeit</div>
+      <div class="hud-wert" id="hud-zeit">0.0</div>
+    </div>
+    <div class="hud-block">
+      <div class="hud-label">Schluessel</div>
+      <div class="hud-wert"><span id="hud-schluessel">0</span><span class="hud-klein" id="hud-schluessel-max">/3</span></div>
+    </div>
+    <div class="hud-block hud-ausdauer">
+      <div class="hud-label">Ausdauer</div>
+      <div class="balken"><div class="balken-fuellung" id="hud-ausdauer"></div></div>
+    </div>
+  </div>
+
+  <div id="gefahr" class="versteckt">ES IST NAH</div>
+  <div id="meldung"></div>
+
+  <!-- Hinweis, dass man klicken muss (Pointer Lock) -->
+  <div id="klick-hinweis" class="versteckt">
+    <div class="klick-inhalt">
+      <div class="klick-symbol">&#128433;</div>
+      Klicken, um die Maus zu uebernehmen
+      <div class="klick-klein">Esc gibt sie wieder frei</div>
+    </div>
+  </div>
+
+  <!-- ================= STARTMENUE ================= -->
+  <div id="menue" class="overlay">
+    <div class="menue-inhalt">
+      <h1 class="titel">SCHATTEN<span>LABYRINTH</span></h1>
+      <div class="dreid">3D</div>
+      <p class="untertitel">Finde die Schluessel. Finde den Ausgang.<br>Und lauf, wenn du es hoerst.</p>
+
+      <div class="schwierigkeit">
+        <button class="stufe" data-stufe="leicht">
+          <span class="stufe-name">Leicht</span>
+          <span class="stufe-info">Kleines Labyrinth &middot; 2 Schluessel &middot; helle Lampe</span>
+        </button>
+        <button class="stufe aktiv" data-stufe="normal">
+          <span class="stufe-name">Normal</span>
+          <span class="stufe-info">3 Schluessel &middot; es lernt dazu</span>
+        </button>
+        <button class="stufe" data-stufe="albtraum">
+          <span class="stufe-name">Albtraum</span>
+          <span class="stufe-info">Riesig &middot; 4 Schluessel &middot; schwache Lampe</span>
+        </button>
+      </div>
+
+      <button id="start-knopf" class="hauptknopf">SPIEL STARTEN</button>
+      <div class="bestzeit" id="menue-bestzeit"></div>
+      <div class="version" id="version-anzeige"></div>
+
+      <div class="steuerung">
+        <kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd> Bewegen
+        <span class="trenner">&middot;</span>
+        <kbd>Maus</kbd> Umsehen
+        <span class="trenner">&middot;</span>
+        <kbd>Shift</kbd> Rennen
+        <span class="trenner">&middot;</span>
+        <kbd>Esc</kbd> Pause
+        <span class="trenner">&middot;</span>
+        <kbd>M</kbd> Karte
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= TOD ================= -->
+  <div id="tod" class="overlay versteckt">
+    <div class="menue-inhalt">
+      <h1 class="titel tot-titel">ES HAT DICH</h1>
+      <p class="untertitel" id="tod-text"></p>
+      <button class="hauptknopf" data-neustart>NOCHMAL</button>
+      <button class="nebenknopf" data-menue>Zurueck zum Menue</button>
+    </div>
+  </div>
+
+  <!-- ================= SIEG ================= -->
+  <div id="sieg" class="overlay versteckt">
+    <div class="menue-inhalt">
+      <h1 class="titel sieg-titel">ENTKOMMEN</h1>
+      <p class="untertitel" id="sieg-text"></p>
+      <button class="hauptknopf" data-neustart>NOCHMAL</button>
+      <button class="nebenknopf" data-menue>Zurueck zum Menue</button>
+    </div>
+  </div>
+
+  <!-- ================= PAUSE ================= -->
+  <div id="pause" class="overlay versteckt">
+    <div class="menue-inhalt">
+      <h1 class="titel">PAUSE</h1>
+      <button class="hauptknopf" id="weiter-knopf">WEITER</button>
+      <button class="nebenknopf" data-menue>Zurueck zum Menue</button>
+    </div>
+  </div>
+
+  <!-- Reihenfolge zaehlt: jede Datei benutzt die darueber -->
+  <script src="js/maze.js"></script>
+  <script src="js/pathfinding.js"></script>
+  <script src="js/texturen.js"></script>
+  <script src="js/raycaster3d.js"></script>
+  <script src="js/audio.js"></script>
+  <script src="js/spieler3d.js"></script>
+  <script src="js/gegner.js"></script>
+  <script src="js/spiel.js"></script>
+</body>
+</html>

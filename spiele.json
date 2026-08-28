@@ -1,0 +1,57 @@
+{
+  "launcher": "Wolken Launcher",
+  "erstellt": "2026-08-28T05:35:05Z",
+  "spiele": [
+    {
+      "id": "schattenlabyrinth-2d",
+      "name": "Schattenlabyrinth 2D",
+      "kurz": "Die Draufsicht-Fassung mit Taschenlampe",
+      "beschreibung": "Dieselbe Spielwelt von oben gesehen. Die Taschenlampe wirft echte Schatten, das Monster jagt dich per Breitensuche durch die Gaenge. Der Vorgaenger der 3D-Version.",
+      "version": "1.0.1",
+      "genre": "Horror",
+      "farbe": "#7f6ad6",
+      "neuerungen": "Kleinere Korrektur beim Offline-Start.",
+      "ordner": "spiele/schattenlabyrinth-2d",
+      "start": "spiel.html",
+      "dateien": [
+        "css/style.css",
+        "js/audio.js",
+        "js/enemy.js",
+        "js/game.js",
+        "js/maze.js",
+        "js/pathfinding.js",
+        "js/player.js",
+        "js/raycast.js",
+        "spiel.html"
+      ],
+      "groesse": 85489,
+      "pruefsumme": "eef22fca24ceab20"
+    },
+    {
+      "id": "schattenlabyrinth-3d",
+      "name": "Schattenlabyrinth 3D",
+      "kurz": "Horror-Labyrinth aus der Ich-Perspektive",
+      "beschreibung": "Du wachst in einem dunklen Labyrinth auf. Deine Taschenlampe zeigt nur einen schmalen Kegel. Finde die Schluessel, finde den Ausgang - und lauf, wenn du es hoerst. Die 3D-Ansicht entsteht komplett per Raycasting, ohne 3D-Bibliothek.",
+      "version": "1.2.0",
+      "genre": "Horror",
+      "farbe": "#4d7fd6",
+      "neuerungen": "Laeuft jetzt im Wolken Launcher als eigenstaendiges Programm.",
+      "ordner": "spiele/schattenlabyrinth-3d",
+      "start": "spiel.html",
+      "dateien": [
+        "css/spiel.css",
+        "js/audio.js",
+        "js/gegner.js",
+        "js/maze.js",
+        "js/pathfinding.js",
+        "js/raycaster3d.js",
+        "js/spiel.js",
+        "js/spieler3d.js",
+        "js/texturen.js",
+        "spiel.html"
+      ],
+      "groesse": 92197,
+      "pruefsumme": "b85595e472bf8932"
+    }
+  ]
+}

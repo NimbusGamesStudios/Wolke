@@ -1,0 +1,737 @@
+/* ============================================================
+   Schattenlabyrinth - Website
+   ============================================================ */
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+:root {
+  --nacht: #05070d;
+  --flaeche: #0d121d;
+  --flaeche-hell: #141b2a;
+  --rand: rgba(125, 150, 215, 0.13);
+  --rand-hell: rgba(125, 160, 240, 0.3);
+  --text: #e2e8f5;
+  --text-leise: #929db5;
+  --text-still: #5f6a84;
+  --blau: #4d7fd6;
+  --blau-hell: #8cc0ff;
+  --rot: #e85a48;
+  --gold: #ffcd7a;
+}
+
+html { scroll-behavior: smooth; }
+
+/* Die Kopfzeile klebt oben und wuerde sonst den Anfang jedes
+   Abschnitts verdecken, wenn man einen Menuepunkt anklickt. */
+section[id] { scroll-margin-top: 74px; }
+
+body {
+  background: var(--nacht);
+  color: var(--text);
+  font-family: "Segoe UI", system-ui, sans-serif;
+  line-height: 1.68;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+
+img { max-width: 100%; height: auto; display: block; }
+
+/* ============================================================
+   Filmkorn und Vignette
+   ------------------------------------------------------------
+   Dasselbe wie im Spiel: eine feine Koernung und dunkle Ecken.
+   Das Rauschen ist ein SVG-Filter direkt im CSS - dafuer braucht
+   es keine Bilddatei.
+   ============================================================ */
+.korn, .vignette {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 60;
+}
+
+.korn {
+  opacity: 0.045;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)'/%3E%3C/svg%3E");
+  animation: rauschen 0.7s steps(3) infinite;
+}
+
+@keyframes rauschen {
+  0%   { transform: translate(0, 0); }
+  33%  { transform: translate(-3%, 2%); }
+  66%  { transform: translate(2%, -3%); }
+  100% { transform: translate(0, 0); }
+}
+
+.vignette {
+  background: radial-gradient(ellipse 82% 78% at 50% 50%,
+              transparent 42%, rgba(0, 0, 0, 0.55) 100%);
+}
+
+/* ============================================================
+   Kopfzeile
+   ============================================================ */
+.kopf {
+  position: sticky;
+  top: 0;
+  z-index: 40;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  padding: 13px clamp(16px, 4vw, 48px);
+  background: rgba(5, 7, 13, 0.72);
+  backdrop-filter: blur(14px);
+  border-bottom: 1px solid var(--rand);
+}
+
+.marke {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  color: var(--text);
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 15.5px;
+}
+
+.marke img { border-radius: 8px; }
+
+.kopf nav { display: flex; align-items: center; gap: 4px; flex-wrap: wrap; }
+
+.kopf nav a {
+  color: var(--text-leise);
+  text-decoration: none;
+  font-size: 13.5px;
+  padding: 7px 12px;
+  border-radius: 7px;
+  transition: color 0.18s, background 0.18s;
+}
+
+.kopf nav a:hover { color: var(--text); background: rgba(125, 150, 215, 0.09); }
+
+.knopf-klein {
+  background: linear-gradient(180deg, #3f6ec2, #2c4d90) !important;
+  color: #fff !important;
+  font-weight: 600;
+  margin-left: 6px;
+  box-shadow: 0 3px 16px rgba(60, 110, 220, 0.3);
+}
+
+.knopf-klein:hover { background: linear-gradient(180deg, #4f82dd, #3660ad) !important; }
+
+/* ============================================================
+   Startbereich mit Taschenlampe
+   ------------------------------------------------------------
+   Das Bild liegt ganz unten. Darueber eine dunkle Schicht mit
+   einem hellen Loch, das dem Mauszeiger folgt - wie die
+   Taschenlampe im Spiel. Die Position kommt aus seite.js als
+   CSS-Variable.
+   ============================================================ */
+.held {
+  position: relative;
+  min-height: min(94vh, 860px);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 70px clamp(16px, 5vw, 48px) 96px;
+  overflow: hidden;
+  isolation: isolate;
+}
+
+.held-bild {
+  position: absolute;
+  inset: -4%;
+  background: url("../bilder/monster.webp") center 42% / cover no-repeat;
+  /* Der Screenshot ist absichtlich fast schwarz - im Spiel sieht man ihn
+     ja nur im Lichtkegel. Als Hintergrund muss er aufgehellt werden,
+     sonst hat die Taschenlampe nichts zu enthuellen. */
+  filter: brightness(2.4) contrast(1.06) saturate(1.15);
+  animation: langsam-zoom 26s ease-in-out infinite alternate;
+}
+
+@keyframes langsam-zoom {
+  from { transform: scale(1);    }
+  to   { transform: scale(1.09); }
+}
+
+/* Die Taschenlampe: aussen dunkel, an der Mausposition durchsichtig */
+.held-lampe {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle 380px at var(--mx, 50%) var(--my, 44%),
+              rgba(5, 7, 13, 0.04) 0%,
+              rgba(5, 7, 13, 0.38) 38%,
+              rgba(5, 7, 13, 0.86) 72%,
+              rgba(5, 7, 13, 0.97) 100%);
+  transition: background 0.12s linear;
+}
+
+/* Nach unten sanft in die Seitenfarbe uebergehen */
+.held-verlauf {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg,
+              rgba(5, 7, 13, 0.8) 0%,
+              rgba(5, 7, 13, 0.12) 34%,
+              rgba(5, 7, 13, 0.72) 78%,
+              var(--nacht) 100%);
+}
+
+.held-inhalt {
+  position: relative;
+  z-index: 2;
+  max-width: 730px;
+  margin: auto 0;
+}
+
+.ueberzeile {
+  font-size: 10.5px;
+  letter-spacing: 0.4em;
+  text-transform: uppercase;
+  color: var(--text-still);
+  margin-bottom: 20px;
+}
+
+.held h1 {
+  font-size: clamp(30px, 6.8vw, 80px);
+  font-weight: 200;
+  letter-spacing: 0.085em;
+  line-height: 1.04;
+  margin-bottom: 26px;
+  text-shadow: 0 0 80px rgba(90, 130, 230, 0.4), 0 4px 34px rgba(0, 0, 0, 0.95);
+}
+
+.held h1 span { color: #8098cc; font-weight: 300; }
+
+/* Ganz gelegentlich zucken - wie eine defekte Lampe */
+.flackern { animation: flackern 9s linear infinite; }
+
+@keyframes flackern {
+  0%, 88%, 100% { opacity: 1; }
+  89%           { opacity: 0.45; }
+  90%           { opacity: 1; }
+  93%           { opacity: 0.62; }
+  94%           { opacity: 1; }
+}
+
+.unterzeile {
+  font-size: clamp(14px, 1.9vw, 17.5px);
+  color: #aeb8ce;
+  margin-bottom: 20px;
+  text-shadow: 0 2px 20px rgba(0, 0, 0, 0.95);
+}
+
+.warnung {
+  margin-bottom: 40px;
+}
+
+.warnung span {
+  display: inline-block;
+  font-size: 12px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--rot);
+  border: 1px solid rgba(232, 90, 72, 0.32);
+  border-radius: 30px;
+  padding: 6px 18px;
+  background: rgba(232, 90, 72, 0.07);
+  text-shadow: 0 0 26px rgba(232, 90, 72, 0.5);
+}
+
+/* ---------- Pfeil nach unten ---------- */
+.runter {
+  position: relative;
+  z-index: 2;
+  margin-top: auto;
+}
+
+.runter span {
+  display: block;
+  width: 11px;
+  height: 11px;
+  border-right: 1.5px solid var(--text-still);
+  border-bottom: 1.5px solid var(--text-still);
+  transform: rotate(45deg);
+  animation: wippen 2.2s ease-in-out infinite;
+}
+
+@keyframes wippen {
+  0%, 100% { transform: rotate(45deg) translate(0, 0);       opacity: 0.35; }
+  50%      { transform: rotate(45deg) translate(5px, 5px);   opacity: 0.9; }
+}
+
+/* ============================================================
+   Knoepfe
+   ============================================================ */
+.knopfreihe {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 14px;
+  flex-wrap: wrap;
+}
+
+.knopf {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  text-decoration: none;
+  border-radius: 11px;
+  transition: transform 0.18s, box-shadow 0.18s, background 0.18s, border-color 0.18s;
+}
+
+.knopf.gross {
+  background: linear-gradient(180deg, #4478d4, #2a4d94);
+  color: #fff;
+  padding: 16px 36px;
+  box-shadow: 0 10px 44px rgba(60, 110, 220, 0.36);
+}
+
+.knopf.gross:hover {
+  background: linear-gradient(180deg, #5187e8, #3459a8);
+  transform: translateY(-2px);
+  box-shadow: 0 16px 56px rgba(70, 130, 250, 0.5);
+}
+
+.knopf-zeile { font-size: 15px; font-weight: 700; letter-spacing: 0.05em; }
+.knopf-klein-text { font-size: 11.5px; font-weight: 400; opacity: 0.8; }
+
+.knopf.leise {
+  padding: 16px 26px;
+  font-size: 13.5px;
+  color: var(--text-leise);
+  border: 1px solid var(--rand);
+  background: rgba(13, 18, 29, 0.5);
+  backdrop-filter: blur(6px);
+}
+
+.knopf.leise:hover { color: var(--text); border-color: var(--rand-hell); }
+
+/* ============================================================
+   Zahlenband
+   ============================================================ */
+.zahlen {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 1px;
+  background: var(--rand);
+  border-top: 1px solid var(--rand);
+  border-bottom: 1px solid var(--rand);
+}
+
+.zahl {
+  background: var(--nacht);
+  padding: 26px 20px;
+  text-align: center;
+}
+
+.zahl b {
+  display: block;
+  font-size: clamp(24px, 3.4vw, 34px);
+  font-weight: 200;
+  color: var(--blau-hell);
+  line-height: 1.15;
+  letter-spacing: 0.02em;
+}
+
+.zahl span {
+  display: block;
+  margin-top: 5px;
+  font-size: 10.5px;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--text-still);
+}
+
+/* ============================================================
+   Abschnitte
+   ============================================================ */
+.abschnitt {
+  padding: clamp(64px, 10vw, 118px) clamp(16px, 5vw, 48px);
+  max-width: 1180px;
+  margin: 0 auto;
+}
+
+.abschnitt.schmal { max-width: 850px; }
+
+.marke-klein {
+  font-size: 10.5px;
+  letter-spacing: 0.32em;
+  text-transform: uppercase;
+  color: var(--blau);
+  margin-bottom: 14px;
+}
+
+.abschnitt h2 {
+  font-size: clamp(25px, 4.2vw, 40px);
+  font-weight: 300;
+  letter-spacing: 0.01em;
+  line-height: 1.25;
+  margin-bottom: 18px;
+}
+
+.abschnitt-text {
+  color: var(--text-leise);
+  font-size: 15px;
+  max-width: 640px;
+  margin-bottom: 46px;
+}
+
+.klein-ueberschrift {
+  font-size: 10.5px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--text-still);
+  margin: 52px 0 16px;
+  font-weight: 600;
+}
+
+/* ---------- Einblenden beim Scrollen ---------- */
+.zeigen {
+  opacity: 0;
+  transform: translateY(22px);
+  transition: opacity 0.7s ease, transform 0.7s ease;
+}
+
+.zeigen.da { opacity: 1; transform: none; }
+
+/* ---------- Drei Punkte ---------- */
+.punkte {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 16px;
+  margin-top: 40px;
+}
+
+.punkt {
+  background: linear-gradient(180deg, var(--flaeche), rgba(13, 18, 29, 0.5));
+  border: 1px solid var(--rand);
+  border-radius: 14px;
+  padding: 26px 26px 28px;
+  transition: border-color 0.25s, transform 0.25s;
+}
+
+.punkt:hover { border-color: var(--rand-hell); transform: translateY(-3px); }
+
+.punkt-zeichen {
+  display: block;
+  font-size: 11px;
+  color: var(--blau);
+  margin-bottom: 14px;
+  opacity: 0.75;
+}
+
+.punkt h3 {
+  font-size: 16px;
+  font-weight: 600;
+  margin-bottom: 9px;
+  letter-spacing: 0.03em;
+}
+
+.punkt p { font-size: 13.5px; color: var(--text-leise); }
+
+/* ---------- Galerie ---------- */
+.galerie {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+}
+
+.galerie .gross { grid-column: 1 / -1; }
+
+.galerie figure {
+  position: relative;
+  border: 1px solid var(--rand);
+  border-radius: 14px;
+  overflow: hidden;
+  background: #000;
+  cursor: zoom-in;
+  transition: border-color 0.3s, box-shadow 0.3s;
+}
+
+.galerie figure:hover {
+  border-color: var(--rand-hell);
+  box-shadow: 0 16px 60px rgba(0, 0, 0, 0.65);
+}
+
+.galerie img {
+  width: 100%;
+  /* Die Bilder sind sehr dunkel. Beim Zeigen leicht aufhellen,
+     damit man mehr erkennt. */
+  filter: brightness(1.06) contrast(1.03);
+  transition: transform 0.7s cubic-bezier(.2,.7,.3,1), filter 0.4s;
+}
+
+.galerie figure:hover img { transform: scale(1.035); filter: brightness(1.3) contrast(1.05); }
+
+.galerie figcaption {
+  position: absolute;
+  left: 0; right: 0; bottom: 0;
+  padding: 34px 20px 16px;
+  font-size: 13px;
+  color: var(--text-leise);
+  background: linear-gradient(180deg, transparent, rgba(3, 5, 10, 0.94) 62%);
+}
+
+.galerie figcaption b { color: var(--text); font-weight: 600; }
+
+/* ---------- Spielkarten ---------- */
+.spiele-liste { display: grid; gap: 14px; margin-top: 38px; }
+
+.spiel-karte {
+  display: flex;
+  gap: 22px;
+  align-items: stretch;
+  background: var(--flaeche);
+  border: 1px solid var(--rand);
+  border-radius: 14px;
+  overflow: hidden;
+  transition: border-color 0.25s;
+}
+
+.spiel-karte:hover { border-color: var(--rand-hell); }
+
+.spiel-kopf {
+  flex-shrink: 0;
+  width: 108px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background:
+    radial-gradient(ellipse at 40% 25%, color-mix(in srgb, var(--farbe) 52%, transparent), transparent 70%),
+    linear-gradient(150deg, color-mix(in srgb, var(--farbe) 26%, #05070d), #05070d 78%);
+}
+
+.spiel-zeichen {
+  font-size: 24px;
+  font-weight: 200;
+  letter-spacing: 0.08em;
+  color: rgba(255, 255, 255, 0.88);
+  text-shadow: 0 3px 22px rgba(0, 0, 0, 0.6);
+}
+
+.spiel-text { padding: 22px 24px 22px 0; }
+.spiel-text h3 { font-size: 16px; font-weight: 600; margin-bottom: 6px; }
+.spiel-text p { font-size: 13.5px; color: var(--text-leise); }
+
+.spiel-meta {
+  margin-top: 9px;
+  font-size: 11.5px !important;
+  color: var(--text-still) !important;
+  letter-spacing: 0.05em;
+}
+
+/* ---------- Tabellen ---------- */
+.tasten, .stufen { width: 100%; border-collapse: collapse; font-size: 14px; }
+
+.tasten td, .stufen td, .stufen th {
+  padding: 12px 4px;
+  border-bottom: 1px solid var(--rand);
+  text-align: left;
+  vertical-align: middle;
+}
+
+.tasten td:first-child { width: 200px; white-space: nowrap; }
+.tasten td:last-child, .stufen td { color: var(--text-leise); }
+.stufen th { width: 130px; font-weight: 600; color: var(--text); }
+
+kbd {
+  display: inline-block;
+  background: var(--flaeche-hell);
+  border: 1px solid var(--rand);
+  border-bottom-width: 2px;
+  border-radius: 5px;
+  padding: 3px 8px;
+  margin-right: 3px;
+  font-family: inherit;
+  font-size: 11.5px;
+  color: var(--text-leise);
+}
+
+/* ---------- Schritte ---------- */
+.schritte { list-style: none; display: grid; gap: 14px; margin-top: 40px; }
+
+.schritte li {
+  display: flex;
+  gap: 22px;
+  align-items: flex-start;
+  background: var(--flaeche);
+  border: 1px solid var(--rand);
+  border-radius: 14px;
+  padding: 24px 28px;
+}
+
+.nummer {
+  flex-shrink: 0;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: rgba(77, 127, 214, 0.15);
+  border: 1px solid rgba(77, 127, 214, 0.3);
+  color: var(--blau-hell);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 14px;
+}
+
+.schritte h3 { font-size: 15.5px; font-weight: 600; margin-bottom: 5px; }
+.schritte p { font-size: 13.5px; color: var(--text-leise); }
+.schritte em { color: var(--text); font-style: normal; font-weight: 600; }
+
+/* ---------- Hinweiskasten ---------- */
+.kasten {
+  margin-top: 32px;
+  background: rgba(77, 127, 214, 0.06);
+  border: 1px solid rgba(77, 127, 214, 0.2);
+  border-radius: 14px;
+  padding: 24px 28px;
+}
+
+.kasten h3 {
+  font-size: 10.5px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--blau-hell);
+  margin-bottom: 13px;
+}
+
+.kasten ul { list-style: none; font-size: 13.5px; color: var(--text-leise); }
+.kasten li { padding-left: 19px; position: relative; margin-bottom: 6px; }
+.kasten li::before {
+  content: "";
+  position: absolute;
+  left: 2px; top: 10px;
+  width: 5px; height: 5px;
+  border-radius: 50%;
+  background: var(--blau);
+}
+
+/* ---------- Technik ---------- */
+.technik-liste {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(290px, 1fr));
+  gap: 30px 38px;
+}
+
+.technik-liste h3 {
+  font-size: 14px;
+  font-weight: 600;
+  margin-bottom: 8px;
+  color: var(--gold);
+  letter-spacing: 0.03em;
+}
+
+.technik-liste p { font-size: 13.5px; color: var(--text-leise); }
+.technik-liste strong { color: var(--text); font-weight: 600; }
+
+/* ============================================================
+   Letzter Aufruf
+   ============================================================ */
+.schluss {
+  position: relative;
+  padding: clamp(70px, 11vw, 130px) clamp(16px, 5vw, 48px);
+  text-align: center;
+  background:
+    radial-gradient(ellipse 60% 130% at 50% 100%, rgba(60, 100, 200, 0.13), transparent 70%),
+    linear-gradient(180deg, transparent, rgba(13, 18, 29, 0.6));
+  border-top: 1px solid var(--rand);
+}
+
+.schluss h2 {
+  font-size: clamp(26px, 4.4vw, 42px);
+  font-weight: 300;
+  margin-bottom: 12px;
+}
+
+.schluss p { color: var(--text-leise); font-size: 14.5px; margin-bottom: 34px; }
+
+/* ============================================================
+   Fusszeile
+   ============================================================ */
+.fuss {
+  border-top: 1px solid var(--rand);
+  padding: 36px clamp(16px, 5vw, 48px) 52px;
+  text-align: center;
+  font-size: 12.5px;
+  color: var(--text-still);
+}
+
+.fuss strong { color: var(--text-leise); font-weight: 600; }
+.fuss p + p { margin-top: 5px; }
+
+/* ============================================================
+   Grossansicht der Bilder
+   ============================================================ */
+.lupe {
+  position: fixed;
+  inset: 0;
+  z-index: 80;
+  background: rgba(2, 3, 7, 0.94);
+  backdrop-filter: blur(8px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 26px;
+  animation: einblenden 0.25s ease;
+}
+
+.lupe[hidden] { display: none; }
+
+@keyframes einblenden { from { opacity: 0; } to { opacity: 1; } }
+
+.lupe img {
+  max-width: 100%;
+  max-height: 100%;
+  border-radius: 10px;
+  border: 1px solid var(--rand);
+  filter: brightness(1.12);
+}
+
+.lupe-zu {
+  position: absolute;
+  top: 18px;
+  right: 24px;
+  background: none;
+  border: none;
+  color: var(--text-leise);
+  font-size: 34px;
+  line-height: 1;
+  cursor: pointer;
+  padding: 6px 12px;
+}
+
+.lupe-zu:hover { color: var(--text); }
+
+/* ============================================================
+   Schmale Bildschirme
+   ============================================================ */
+@media (max-width: 620px) {
+  .held h1 span { display: block; }
+  .held h1 { font-size: clamp(34px, 12.5vw, 62px); }
+  .galerie { grid-template-columns: 1fr; }
+  .kopf nav a:not(.knopf-klein) { display: none; }
+  .schritte li { flex-direction: column; gap: 13px; }
+  .spiel-karte { flex-direction: column; }
+  .spiel-kopf { width: 100%; height: 78px; }
+  .spiel-text { padding: 0 22px 24px; }
+  .tasten td:first-child { width: auto; }
+}
+
+/* ============================================================
+   Wer keine Bewegung mag, bekommt keine
+   ============================================================ */
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after { animation: none !important; transition: none !important; }
+  .zeigen { opacity: 1; transform: none; }
+
+  /* Ausnahme: Die Taschenlampe folgt der Maus. Das ist eine Reaktion
+     auf eine Eingabe, keine selbstlaufende Animation - sie bleibt an. */
+  .held-lampe { transition: background 0.12s linear !important; }
+}

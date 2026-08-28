@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Schattenlabyrinth</title>
+  <link rel="icon" href="data:,">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <!-- Das Spielfeld. Alles wird per JavaScript hier drauf gezeichnet. -->
+  <canvas id="spielfeld"></canvas>
+
+  <!-- ================= HUD (waehrend des Spiels) ================= -->
+  <div id="hud" class="versteckt">
+
+    <div class="hud-block">
+      <div class="hud-label">Zeit</div>
+      <div class="hud-wert" id="hud-zeit">0.0</div>
+    </div>
+
+    <div class="hud-block">
+      <div class="hud-label">Schluessel</div>
+      <div class="hud-wert"><span id="hud-schluessel">0</span><span class="hud-klein" id="hud-schluessel-max">/3</span></div>
+    </div>
+
+    <div class="hud-block hud-ausdauer">
+      <div class="hud-label">Ausdauer</div>
+      <div class="balken"><div class="balken-fuellung" id="hud-ausdauer"></div></div>
+    </div>
+
+  </div>
+
+  <!-- Warnung, wenn das Monster nah ist -->
+  <div id="gefahr" class="versteckt">ES IST NAH</div>
+
+  <!-- Kurze Einblendungen ("Schluessel gefunden") -->
+  <div id="meldung"></div>
+
+  <!-- ================= STARTMENUE ================= -->
+  <div id="menue" class="overlay">
+    <div class="menue-inhalt">
+      <h1 class="titel">SCHATTEN<span>LABYRINTH</span></h1>
+      <p class="untertitel">Finde die Schluessel. Finde den Ausgang.<br>Und lauf, wenn du es hoerst.</p>
+
+      <div class="schwierigkeit">
+        <button class="stufe" data-stufe="leicht">
+          <span class="stufe-name">Leicht</span>
+          <span class="stufe-info">Kleines Labyrinth &middot; 2 Schluessel &middot; langsames Monster</span>
+        </button>
+        <button class="stufe aktiv" data-stufe="normal">
+          <span class="stufe-name">Normal</span>
+          <span class="stufe-info">3 Schluessel &middot; es lernt dazu</span>
+        </button>
+        <button class="stufe" data-stufe="albtraum">
+          <span class="stufe-name">Albtraum</span>
+          <span class="stufe-info">Riesig &middot; 4 Schluessel &middot; schneller als du</span>
+        </button>
+      </div>
+
+      <button id="start-knopf" class="hauptknopf">SPIEL STARTEN</button>
+
+      <div class="bestzeit" id="menue-bestzeit"></div>
+
+      <div class="steuerung">
+        <kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd> Bewegen
+        <span class="trenner">&middot;</span>
+        <kbd>Shift</kbd> Rennen
+        <span class="trenner">&middot;</span>
+        <kbd>Maus</kbd> Taschenlampe
+        <span class="trenner">&middot;</span>
+        <kbd>Esc</kbd> Pause
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= TOD ================= -->
+  <div id="tod" class="overlay versteckt">
+    <div class="menue-inhalt">
+      <h1 class="titel tot-titel">ES HAT DICH</h1>
+      <p class="untertitel" id="tod-text"></p>
+      <button class="hauptknopf" data-neustart>NOCHMAL</button>
+      <button class="nebenknopf" data-menue>Zurueck zum Menue</button>
+    </div>
+  </div>
+
+  <!-- ================= GEWONNEN ================= -->
+  <div id="sieg" class="overlay versteckt">
+    <div class="menue-inhalt">
+      <h1 class="titel sieg-titel">ENTKOMMEN</h1>
+      <p class="untertitel" id="sieg-text"></p>
+      <button class="hauptknopf" data-neustart>NOCHMAL</button>
+      <button class="nebenknopf" data-menue>Zurueck zum Menue</button>
+    </div>
+  </div>
+
+  <!-- ================= PAUSE ================= -->
+  <div id="pause" class="overlay versteckt">
+    <div class="menue-inhalt">
+      <h1 class="titel">PAUSE</h1>
+      <button class="hauptknopf" id="weiter-knopf">WEITER</button>
+      <button class="nebenknopf" data-menue>Zurueck zum Menue</button>
+    </div>
+  </div>
+
+  <!--
+    WICHTIG: Die Reihenfolge zaehlt. Jede Datei benutzt die, die
+    ueber ihr steht. game.js kommt zuletzt, weil es alles zusammenbaut.
+  -->
+  <script src="js/maze.js"></script>
+  <script src="js/pathfinding.js"></script>
+  <script src="js/raycast.js"></script>
+  <script src="js/audio.js"></script>
+  <script src="js/player.js"></script>
+  <script src="js/enemy.js"></script>
+  <script src="js/game.js"></script>
+</body>
+</html>

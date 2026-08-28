@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Schattenlabyrinth &ndash; Wolken</title>
+  <meta name="description" content="Ein Horror-Labyrinth aus der Ich-Perspektive. Finde die Schluessel, finde den Ausgang - und lauf, wenn du es hoerst. Kostenlos fuer Windows.">
+  <meta name="theme-color" content="#05070d">
+
+  <meta property="og:title" content="Schattenlabyrinth">
+  <meta property="og:description" content="Ein Horror-Labyrinth aus der Ich-Perspektive. Kostenlos fuer Windows.">
+  <meta property="og:image" content="bilder/monster.webp">
+  <meta property="og:type" content="website">
+
+  <link rel="icon" href="bilder/favicon-64.png">
+  <link rel="stylesheet" href="css/seite.css">
+</head>
+<body>
+
+<!-- Filmkorn und Vignette liegen ueber der ganzen Seite -->
+<div class="korn" aria-hidden="true"></div>
+<div class="vignette" aria-hidden="true"></div>
+
+<!-- ============================================================
+     Kopfzeile
+     ============================================================ -->
+<header class="kopf">
+  <a class="marke" href="#oben">
+    <img src="bilder/icon-192.png" alt="" width="32" height="32">
+    <span>Wolken</span>
+  </a>
+  <nav>
+    <a href="#bilder">Bilder</a>
+    <a href="#spiele">Spiele</a>
+    <a href="#so-gehts">Loslegen</a>
+    <a href="#technik">Technik</a>
+    <a class="knopf-klein" href="download/Wolken.exe" download>Herunterladen</a>
+  </nav>
+</header>
+
+<!-- ============================================================
+     Startbereich mit Taschenlampe
+     ============================================================ -->
+<section class="held" id="oben">
+  <div class="held-bild" aria-hidden="true"></div>
+  <div class="held-lampe" aria-hidden="true"></div>
+  <div class="held-verlauf" aria-hidden="true"></div>
+
+  <div class="held-inhalt">
+    <p class="ueberzeile">Ein Spiel von Lennart</p>
+
+    <h1 class="flackern">SCHATTEN<span>LABYRINTH</span></h1>
+
+    <p class="unterzeile">
+      Du wachst in einem dunklen Labyrinth auf.<br>
+      Deine Taschenlampe zeigt dir einen schmalen Kegel &mdash; mehr nicht.
+    </p>
+
+    <p class="warnung"><span>Etwas ist hier unten bei dir. Es h&ouml;rt dich rennen.</span></p>
+
+    <div class="knopfreihe">
+      <a class="knopf gross" href="download/Wolken.exe" download>
+        <span class="knopf-zeile">Kostenlos herunterladen</span>
+        <span class="knopf-klein-text">Windows &middot; 18,3 MB</span>
+      </a>
+      <a class="knopf leise" href="#bilder">Erst mal ansehen</a>
+    </div>
+  </div>
+
+  <div class="runter" aria-hidden="true"><span></span></div>
+</section>
+
+<!-- ============================================================
+     Zahlen
+     ============================================================ -->
+<section class="zahlen" aria-label="Technische Eckdaten">
+  <div class="zahl"><b>0</b><span>Grafik-Bibliotheken</span></div>
+  <div class="zahl"><b>0</b><span>Bilddateien</span></div>
+  <div class="zahl"><b>480</b><span>Strahlen pro Bild</span></div>
+  <div class="zahl"><b>2,5&thinsp;ms</b><span>Rechenzeit pro Bild</span></div>
+</section>
+
+<!-- ============================================================
+     Worum es geht
+     ============================================================ -->
+<section class="abschnitt schmal" id="worum">
+  <p class="marke-klein zeigen">Das Spiel</p>
+  <h2 class="zeigen">Drei Schl&uuml;ssel. Ein Ausgang.<br>Und etwas, das dich sucht.</h2>
+
+  <div class="punkte">
+    <div class="punkt zeigen">
+      <span class="punkt-zeichen" aria-hidden="true">&#9679;</span>
+      <h3>Finden</h3>
+      <p>Die Schl&uuml;ssel liegen immer weit weg vom Start &mdash; das rechnet
+         das Spiel beim Erzeugen des Labyrinths aus. Ohne sie bleibt die
+         T&uuml;r zu.</p>
+    </div>
+    <div class="punkt zeigen">
+      <span class="punkt-zeichen" aria-hidden="true">&#9650;</span>
+      <h3>Rennen</h3>
+      <p>Sprinten geht ein paar Sekunden, dann bist du aus der Puste.
+         Und es macht L&auml;rm: Rennen h&ouml;rt es auch durch W&auml;nde.</p>
+    </div>
+    <div class="punkt zeigen">
+      <span class="punkt-zeichen" aria-hidden="true">&#9632;</span>
+      <h3>&Uuml;berleben</h3>
+      <p>Es nimmt immer den k&uuml;rzesten Weg zu dir. Verliert es dich,
+         sucht es die Stelle ab, an der es dich zuletzt bemerkt hat.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     Bilder
+     ============================================================ -->
+<section class="abschnitt" id="bilder">
+  <p class="marke-klein zeigen">Bilder</p>
+  <h2 class="zeigen">Aus dem Spiel, nicht nachgestellt</h2>
+  <p class="abschnitt-text zeigen">
+    Jede Wand, jeder Lichtkegel und jede Textur wird w&auml;hrend des Spielens
+    berechnet. Zum Vergr&ouml;&szlig;ern anklicken.
+  </p>
+
+  <div class="galerie">
+    <figure class="gross zeigen">
+      <img src="bilder/monster.webp" alt="Ein dunkles Wesen mit gluehenden roten Augen am Ende eines Gangs" loading="lazy" width="1280" height="720">
+      <figcaption><b>Wenn du die Augen siehst</b>, hat es dich l&auml;ngst gesehen.</figcaption>
+    </figure>
+
+    <figure class="zeigen">
+      <img src="bilder/schluessel.webp" alt="Ein leuchtender Schluessel schwebt in einer Sackgasse" loading="lazy" width="1280" height="720">
+      <figcaption><b>Ein Schl&uuml;ssel.</b> Zwei fehlen noch.</figcaption>
+    </figure>
+
+    <figure class="zeigen">
+      <img src="bilder/ausgang.webp" alt="Eine verriegelte Holztuer am Ende eines Gangs" loading="lazy" width="1280" height="720">
+      <figcaption><b>Der Ausgang.</b> Verschlossen, bis du alle hast.</figcaption>
+    </figure>
+
+    <figure class="gross zeigen">
+      <img src="bilder/gang.webp" alt="Ein langer Gang aus Mauerwerk, der sich in der Dunkelheit verliert" loading="lazy" width="1280" height="720">
+      <figcaption><b>Jedes Labyrinth ist neu.</b> Auch f&uuml;r mich &mdash; ich kenne den Weg genauso wenig wie du.</figcaption>
+    </figure>
+  </div>
+</section>
+
+<!-- ============================================================
+     Was im Launcher steckt
+     ============================================================ -->
+<section class="abschnitt schmal" id="spiele">
+  <p class="marke-klein zeigen">Im Launcher enthalten</p>
+  <h2 class="zeigen">Zwei Spiele</h2>
+
+  <div class="spiele-liste">
+    <article class="spiel-karte zeigen">
+      <div class="spiel-kopf" style="--farbe:#4d7fd6">
+        <span class="spiel-zeichen">3D</span>
+      </div>
+      <div class="spiel-text">
+        <h3>Schattenlabyrinth 3D</h3>
+        <p>Die Ich-Perspektive. Taschenlampe, Ausdauer, ein Monster,
+           das dich jagt. Drei Schwierigkeitsgrade.</p>
+        <p class="spiel-meta">Version 1.2.0 &middot; Horror</p>
+      </div>
+    </article>
+
+    <article class="spiel-karte zeigen">
+      <div class="spiel-kopf" style="--farbe:#7f6ad6">
+        <span class="spiel-zeichen">2D</span>
+      </div>
+      <div class="spiel-text">
+        <h3>Schattenlabyrinth 2D</h3>
+        <p>Dieselbe Welt von oben. Die Taschenlampe wirft echte Schatten
+           um die Ecken. Der Vorg&auml;nger der 3D-Fassung.</p>
+        <p class="spiel-meta">Version 1.0.1 &middot; Horror</p>
+      </div>
+    </article>
+  </div>
+
+  <h3 class="klein-ueberschrift zeigen">Steuerung</h3>
+  <table class="tasten zeigen">
+    <tr><td><kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd></td><td>Bewegen</td></tr>
+    <tr><td><kbd>Maus</kbd></td><td>Umsehen</td></tr>
+    <tr><td><kbd>Shift</kbd></td><td>Rennen &ndash; verbraucht Ausdauer</td></tr>
+    <tr><td><kbd>M</kbd></td><td>Karte ein- und ausblenden</td></tr>
+    <tr><td><kbd>Esc</kbd></td><td>Pause</td></tr>
+  </table>
+
+  <h3 class="klein-ueberschrift zeigen">Schwierigkeitsgrade</h3>
+  <table class="stufen zeigen">
+    <tr><th>Leicht</th><td>Kleines Labyrinth, 2 Schl&uuml;ssel, helle Lampe, langsames Monster</td></tr>
+    <tr><th>Normal</th><td>3 Schl&uuml;ssel, es lernt dazu</td></tr>
+    <tr><th>Albtraum</th><td>Riesig, 4 Schl&uuml;ssel, schwache Lampe &mdash; und es ist schneller als du</td></tr>
+  </table>
+</section>
+
+<!-- ============================================================
+     Loslegen
+     ============================================================ -->
+<section class="abschnitt" id="so-gehts">
+  <p class="marke-klein zeigen">Loslegen</p>
+  <h2 class="zeigen">In drei Schritten drin</h2>
+
+  <ol class="schritte">
+    <li class="zeigen">
+      <span class="nummer">1</span>
+      <div>
+        <h3>Launcher herunterladen</h3>
+        <p>Eine einzige Datei. Es wird nichts installiert und nichts in der
+           Registry eingetragen &mdash; zum Entfernen l&ouml;schst du sie wieder.</p>
+      </div>
+    </li>
+    <li class="zeigen">
+      <span class="nummer">2</span>
+      <div>
+        <h3>Starten</h3>
+        <p>Doppelklick. Beim ersten Mal warnt Windows, weil das Programm
+           keine gekaufte Signatur hat &mdash; auf <em>Weitere Informationen</em>
+           und dann <em>Trotzdem ausf&uuml;hren</em> klicken.</p>
+      </div>
+    </li>
+    <li class="zeigen">
+      <span class="nummer">3</span>
+      <div>
+        <h3>Spiel installieren</h3>
+        <p>Im Launcher auf <em>Herunterladen</em>. Danach l&auml;uft das Spiel
+           auch ohne Internet, und neue Versionen meldet er von selbst.</p>
+      </div>
+    </li>
+  </ol>
+
+  <div class="kasten zeigen">
+    <h3>Was du brauchst</h3>
+    <ul>
+      <li>Windows 10 oder 11</li>
+      <li>Sonst nichts &mdash; der Launcher bringt alles mit</li>
+      <li>Etwa 25 MB Platz</li>
+    </ul>
+  </div>
+</section>
+
+<!-- ============================================================
+     Technik
+     ============================================================ -->
+<section class="abschnitt schmal" id="technik">
+  <p class="marke-klein zeigen">Unter der Haube</p>
+  <h2 class="zeigen">Wie das gebaut ist</h2>
+  <p class="abschnitt-text zeigen">
+    Ein Schulprojekt f&uuml;r Informatik. Keine Spiel-Engine, keine 3D-Bibliothek,
+    keine fertigen Grafiken &mdash; nur HTML, CSS und JavaScript.
+  </p>
+
+  <div class="technik-liste">
+    <div class="zeigen">
+      <h3>Das Labyrinth</h3>
+      <p><strong>Recursive Backtracking.</strong> Ein Stapel merkt sich den Weg;
+         an einer Sackgasse geht der Algorithmus zur&uuml;ck, bis wieder eine
+         unbesuchte Zelle in Reichweite ist. Zwischen je zwei Punkten gibt es
+         danach genau einen Weg.</p>
+    </div>
+    <div class="zeigen">
+      <h3>Die 3D-Ansicht</h3>
+      <p><strong>Raycasting mit DDA.</strong> F&uuml;r jede der 480 Bildspalten
+         fliegt ein Strahl los. Wie weit er kommt, bestimmt die H&ouml;he der Wand
+         auf dem Bildschirm. Denselben Trick benutzte Wolfenstein 3D 1992.</p>
+    </div>
+    <div class="zeigen">
+      <h3>Das Monster</h3>
+      <p><strong>Breitensuche und ein Zustandsautomat.</strong> Es streift umher,
+         jagt dich oder sucht deine letzte bekannte Position ab. Der Weg zu dir
+         ist immer der k&uuml;rzeste m&ouml;gliche.</p>
+    </div>
+    <div class="zeigen">
+      <h3>Der Klang</h3>
+      <p><strong>Web Audio API.</strong> Keine Sounddateien. Schritte, Knurren
+         und Herzschlag entstehen aus Oszillatoren und Rauschen &mdash; der
+         Herzschlag wird schneller, je n&auml;her es kommt.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     Letzter Aufruf
+     ============================================================ -->
+<section class="schluss">
+  <div class="schluss-inhalt zeigen">
+    <h2>Trau dich rein</h2>
+    <p>Kostenlos, keine Anmeldung, keine Werbung.</p>
+    <div class="knopfreihe">
+      <a class="knopf gross" href="download/Wolken.exe" download>
+        <span class="knopf-zeile">Kostenlos herunterladen</span>
+        <span class="knopf-klein-text">Windows &middot; 18,3 MB</span>
+      </a>
+    </div>
+  </div>
+</section>
+
+<footer class="fuss">
+  <p><strong>Schattenlabyrinth</strong> &middot; Wolken Launcher</p>
+  <p>Schulprojekt Informatik &middot; 2026</p>
+</footer>
+
+<!-- Grossansicht fuer die Bilder -->
+<div class="lupe" id="lupe" hidden>
+  <button class="lupe-zu" id="lupe-zu" aria-label="Schliessen">&times;</button>
+  <img id="lupe-bild" src="" alt="">
+</div>
+
+<script src="js/seite.js"></script>
+</body>
+</html>
