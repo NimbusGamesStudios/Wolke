@@ -97,6 +97,11 @@ img { max-width: 100%; height: auto; display: block; }
 
 .marke img { border-radius: 8px; }
 
+/* Wortmarke: "Nimbus" hell, "Games" gedaempft - so wie es
+   Studios wie Riot Games auf ihren Seiten machen. */
+.marke span { letter-spacing: 0.03em; }
+.marke b { font-weight: 300; color: var(--text-still); margin-left: 4px; }
+
 .kopf nav { display: flex; align-items: center; gap: 4px; flex-wrap: wrap; }
 
 .kopf nav a {
@@ -663,6 +668,13 @@ kbd {
 }
 
 .fuss strong { color: var(--text-leise); font-weight: 600; }
+
+.fuss-marke {
+  font-size: 11px;
+  letter-spacing: 0.34em;
+  color: var(--blau);
+  margin-bottom: 12px;
+}
 .fuss p + p { margin-top: 5px; }
 
 /* ============================================================
@@ -735,3 +747,18 @@ kbd {
      auf eine Eingabe, keine selbstlaufende Animation - sie bleibt an. */
   .held-lampe { transition: background 0.12s linear !important; }
 }
+
+/* ---------- Kasten fuer die Windows-Warnung ---------- */
+.warnkasten {
+  background: rgba(224, 168, 60, 0.06);
+  border-color: rgba(224, 168, 60, 0.24);
+}
+
+.warnkasten h3 { color: var(--gold); }
+
+.warnkasten p {
+  font-size: 13.5px;
+  color: var(--text-leise);
+}
+
+.warnkasten p + p { margin-top: 10px; }
