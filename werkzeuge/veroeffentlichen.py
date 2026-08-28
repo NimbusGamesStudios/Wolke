@@ -99,18 +99,23 @@ def main():
         else:
             print('  mitgenommen: %s  ->  %s' % (quelle, ziel))
 
-    # Das ZIP mit hochladen - NICHT die nackte .exe.
-    # Chrome blockiert unsignierte .exe-Dateien von neuen Adressen
-    # ("Verdaechtiger Download blockiert"). Bei einem ZIP passiert das
-    # so gut wie nie. Entpacken ist ein Klick mehr, dafuer kommt der
-    # Download ueberhaupt an.
-    paket = os.path.join(WURZEL, 'dist', 'Wolken-Launcher.zip')
-    if os.path.exists(paket):
-        os.makedirs(os.path.join(ZIEL, 'download'), exist_ok=True)
-        shutil.copy2(paket, os.path.join(ZIEL, 'download', 'Wolken-Launcher.zip'))
-        print('  mitgenommen: dist/Wolken-Launcher.zip  ->  download/Wolken-Launcher.zip')
-    else:
-        print('  Hinweis: dist/Wolken-Launcher.zip fehlt - vorher paket_bauen.py laufen lassen')
+    # Der Installer ist der Hauptdownload - eine Datei, kein Entpacken.
+    # Das ZIP daneben ist nur die Rueckfallebene, falls ein Browser den
+    # .exe-Download blockiert.
+    os.makedirs(os.path.join(ZIEL, 'download'), exist_ok=True)
+    fehlt = []
+
+    for name in ('WolkenSetup.exe', 'WolkenSetup.zip'):
+        quelle = os.path.join(WURZEL, 'dist', name)
+        if os.path.exists(quelle):
+            shutil.copy2(quelle, os.path.join(ZIEL, 'download', name))
+            print('  mitgenommen: dist/%s  ->  download/%s' % (name, name))
+        else:
+            fehlt.append(name)
+
+    if fehlt:
+        print('  Hinweis: %s fehlt - vorher werkzeuge/installer_bauen.py laufen lassen'
+              % ', '.join(fehlt))
 
     # GitHub Pages laesst sonst Ordner aus, die mit _ anfangen.
     # Bei uns gibt es keine, aber die Datei schadet nie und erspart

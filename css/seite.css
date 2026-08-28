@@ -770,3 +770,6 @@ kbd {
   border-left: 2px solid rgba(224, 168, 60, 0.45);
   color: var(--text-leise);
 }
+
+.schritte .wichtig a { color: var(--gold); text-decoration: underline; }
+.schritte .wichtig a:hover { color: #ffe0a8; }
