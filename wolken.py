@@ -189,6 +189,52 @@ def installiert_schreiben(daten):
 fortschritt = {}
 fortschritt_sperre = threading.Lock()
 
+# Welches Spiel laeuft gerade, und seit wann?
+# Damit koennen wir die Spielzeit mitzaehlen - so wie es Steam macht.
+laufendes_spiel = {'id': None, 'start': 0}
+
+# Titelbilder werden von der Oberflaeche mehrfach gleichzeitig
+# angefragt. Ohne Sperre wuerden mehrere Threads dieselbe Datei
+# zugleich schreiben - und einer liest sie dann halbfertig.
+bilder_sperre = threading.Lock()
+
+
+def spiel_gestartet(spiel_id):
+    """Merkt sich, dass ein Spiel geoeffnet wurde."""
+    spiel_beendet()          # falls noch eines offen war, erst abrechnen
+    laufendes_spiel['id'] = spiel_id
+    laufendes_spiel['start'] = time.time()
+
+
+def spiel_beendet():
+    """
+    Rechnet die Spielzeit ab.
+
+    Aufgerufen wird das, sobald die Launcher-Oberflaeche wieder geladen
+    wird - also wenn der Spieler aus dem Spiel zurueckkommt. Das Spiel
+    laeuft im selben Fenster, deshalb ist das der einzige verlaessliche
+    Zeitpunkt, an dem wir es merken.
+    """
+    spiel_id = laufendes_spiel['id']
+    if not spiel_id:
+        return
+
+    dauer = int(time.time() - laufendes_spiel['start'])
+    laufendes_spiel['id'] = None
+
+    # Unter 5 Sekunden war es wohl ein Fehlklick - dann zaehlt weder
+    # die Spielzeit noch der Start. Sonst waeren die Zahlen
+    # widerspruechlich: "12 mal gestartet, 0 Minuten gespielt".
+    if dauer < 5:
+        return
+
+    daten = installiert_lesen()
+    if spiel_id in daten:
+        daten[spiel_id]['spielzeit'] = daten[spiel_id].get('spielzeit', 0) + dauer
+        daten[spiel_id]['starts'] = daten[spiel_id].get('starts', 0) + 1
+        daten[spiel_id]['zuletzt'] = time.strftime('%Y-%m-%dT%H:%M:%S')
+        installiert_schreiben(daten)
+
 
 def fortschritt_setzen(spiel_id, **werte):
     with fortschritt_sperre:
@@ -380,12 +426,76 @@ class Bediener(BaseHTTPRequestHandler):
             self.antworte_json({'ok': True})
             return
 
+        if pfad == '/api/gestartet':
+            spiel_gestartet(daten.get('id', ''))
+            self.antworte_json({'ok': True})
+            return
+
+        if pfad == '/api/zurueck':
+            spiel_beendet()
+            self.antworte_json({'ok': True})
+            return
+
         if pfad == '/api/beenden':
             self.antworte_json({'ok': True})
             threading.Thread(target=beenden, daemon=True).start()
             return
 
         self.send_error(404, 'Unbekannter Befehl')
+
+    def bild_ausliefern(self):
+        """
+        Liefert ein Titelbild eines Spiels aus.
+
+        Der Launcher zeigt die Bilder schon an, BEVOR ein Spiel
+        installiert ist - sie liegen dann noch gar nicht auf der
+        Festplatte. Also holen wir sie bei Bedarf aus der Quelle und
+        legen sie in einem eigenen Ordner ab. Beim naechsten Mal
+        kommen sie von dort und es ist kein Netz noetig.
+        """
+        from urllib.parse import urlparse, parse_qs
+        frage = parse_qs(urlparse(self.path).query)
+        spiel = (frage.get('spiel') or [''])[0]
+        name = (frage.get('name') or ['kapsel'])[0]
+
+        # Nur harmlose Namen zulassen
+        if not spiel or name not in ('kapsel', 'banner'):
+            self.send_error(400, 'Ungueltige Anfrage')
+            return
+        if not all(c.isalnum() or c in '-_' for c in spiel):
+            self.send_error(400, 'Ungueltiger Spielname')
+            return
+
+        ablage = os.path.join(DATEN, 'titelbilder')
+        os.makedirs(ablage, exist_ok=True)
+        zwischen = os.path.join(ablage, '%s-%s.webp' % (spiel, name))
+
+        with bilder_sperre:
+            if not os.path.exists(zwischen):
+                try:
+                    daten = datei_holen('spiele/%s/%s.webp' % (spiel, name))
+                except Exception:
+                    self.send_error(404, 'Kein Bild vorhanden')
+                    return
+
+                # Erst in eine Nebendatei schreiben, dann umbenennen.
+                # Umbenennen geschieht in einem Rutsch - so sieht nie
+                # jemand eine halbfertige Datei.
+                temp = zwischen + '.teil'
+                with open(temp, 'wb') as f:
+                    f.write(daten)
+                os.replace(temp, zwischen)
+
+            with open(zwischen, 'rb') as f:
+                inhalt = f.read()
+
+        self.send_response(200)
+        self.send_header('Content-Type', 'image/webp')
+        self.send_header('Content-Length', str(len(inhalt)))
+        # Titelbilder aendern sich selten - der Browser darf sie behalten
+        self.send_header('Cache-Control', 'max-age=3600')
+        self.end_headers()
+        self.wfile.write(inhalt)
 
     # ---------- Die einzelnen API-Punkte ----------
     def api(self, pfad):
@@ -413,6 +523,10 @@ class Bediener(BaseHTTPRequestHandler):
                     'quelle': QUELLE,
                     'online_quelle': IST_ONLINE_QUELLE,
                 }, 503)
+            return
+
+        if pfad.startswith('/api/bild'):
+            self.bild_ausliefern()
             return
 
         if pfad == '/api/fortschritt':

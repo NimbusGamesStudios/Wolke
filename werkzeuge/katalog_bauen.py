@@ -138,6 +138,10 @@ def main():
             'dateien': dateien,
             'groesse': groesse_von(spiel_ordner, dateien),
             'pruefsumme': pruefsumme(spiel_ordner, dateien),
+            # Welche Titelbilder liegen bereit? Der Launcher zeigt sie
+            # schon im Regal an - also bevor das Spiel installiert ist.
+            'kapsel': 'kapsel.webp' in dateien,
+            'banner': 'banner.webp' in dateien,
         }
         spiele.append(spiel)
 

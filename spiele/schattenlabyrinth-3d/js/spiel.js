@@ -11,7 +11,7 @@
 
 // Version des Spiels. Muss zur "version" in info.json passen -
 // katalog_bauen.py prueft das und warnt, wenn es auseinanderlaeuft.
-const SPIEL_VERSION = '1.2.0';
+const SPIEL_VERSION = '1.3.0';
 
 // ---------- Grundeinstellungen ----------
 const TILE = 64;                 // Kachelgroesse in Welteinheiten

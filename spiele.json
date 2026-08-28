@@ -1,19 +1,20 @@
 {
   "launcher": "Wolken Launcher",
-  "erstellt": "2026-08-28T05:35:05Z",
+  "erstellt": "2026-08-28T07:54:55Z",
   "spiele": [
     {
       "id": "schattenlabyrinth-2d",
       "name": "Schattenlabyrinth 2D",
       "kurz": "Die Draufsicht-Fassung mit Taschenlampe",
       "beschreibung": "Dieselbe Spielwelt von oben gesehen. Die Taschenlampe wirft echte Schatten, das Monster jagt dich per Breitensuche durch die Gaenge. Der Vorgaenger der 3D-Version.",
-      "version": "1.0.1",
+      "version": "1.1.0",
       "genre": "Horror",
       "farbe": "#7f6ad6",
-      "neuerungen": "Kleinere Korrektur beim Offline-Start.",
+      "neuerungen": "Eigenes Titelbild fuer den Launcher.",
       "ordner": "spiele/schattenlabyrinth-2d",
       "start": "spiel.html",
       "dateien": [
+        "banner.webp",
         "css/style.css",
         "js/audio.js",
         "js/enemy.js",
@@ -22,23 +23,27 @@
         "js/pathfinding.js",
         "js/player.js",
         "js/raycast.js",
+        "kapsel.webp",
         "spiel.html"
       ],
-      "groesse": 85489,
-      "pruefsumme": "eef22fca24ceab20"
+      "groesse": 114661,
+      "pruefsumme": "18f10fc15796da56",
+      "kapsel": true,
+      "banner": true
     },
     {
       "id": "schattenlabyrinth-3d",
       "name": "Schattenlabyrinth 3D",
       "kurz": "Horror-Labyrinth aus der Ich-Perspektive",
       "beschreibung": "Du wachst in einem dunklen Labyrinth auf. Deine Taschenlampe zeigt nur einen schmalen Kegel. Finde die Schluessel, finde den Ausgang - und lauf, wenn du es hoerst. Die 3D-Ansicht entsteht komplett per Raycasting, ohne 3D-Bibliothek.",
-      "version": "1.2.0",
+      "version": "1.3.0",
       "genre": "Horror",
       "farbe": "#4d7fd6",
-      "neuerungen": "Laeuft jetzt im Wolken Launcher als eigenstaendiges Programm.",
+      "neuerungen": "Eigenes Titelbild fuer den Launcher.",
       "ordner": "spiele/schattenlabyrinth-3d",
       "start": "spiel.html",
       "dateien": [
+        "banner.webp",
         "css/spiel.css",
         "js/audio.js",
         "js/gegner.js",
@@ -48,10 +53,13 @@
         "js/spiel.js",
         "js/spieler3d.js",
         "js/texturen.js",
+        "kapsel.webp",
         "spiel.html"
       ],
-      "groesse": 92197,
-      "pruefsumme": "b85595e472bf8932"
+      "groesse": 151697,
+      "pruefsumme": "dfe45b7f9f93c0f9",
+      "kapsel": true,
+      "banner": true
     }
   ]
 }
